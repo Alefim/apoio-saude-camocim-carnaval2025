@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apoio à Saúde - Carnaval 2025</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #ffcc00;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #ff5733;
+            padding: 15px;
+            color: white;
+            font-size: 24px;
+        }
+        .container {
+            padding: 20px;
+        }
+        .card {
+            background: white;
+            padding: 15px;
+            margin: 10px auto;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            display: inline-block;
+            background-color: #ff5733;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #e74c3c;
+        }
+        #map {
+            width: 100%;
+            height: 400px;
+            margin-top: 20px;
+            display: none;
+        }
+        footer {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+        }
+        .flags {
+            margin: 10px;
+        }
+        .flags img {
+            width: 30px;
+            cursor: pointer;
+            margin: 5px;
+        }
+    </style>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
+</head>
+<body>
+    <header>Apoio à Saúde - Carnaval 2025</header>
+    <div class="flags">
+        <img src="brazil.png" alt="Português" onclick="changeLanguage('pt')">
+        <img src="usa.png" alt="English" onclick="changeLanguage('en')">
+        <img src="spain.png" alt="Español" onclick="changeLanguage('es')">
+        <img src="france.png" alt="Français" onclick="changeLanguage('fr')">
+    </div>
+    <div class="container">
+        <div class="card" id="health-tips">
+            <h3>Dicas de Saúde</h3>
+            <p>Mantenha-se hidratado, use protetor solar e descanse sempre que possível.</p>
+            <button class="btn">Saiba Mais</button>
+        </div>
+        <div class="card" id="first-aid">
+            <h3>Primeiros Socorros</h3>
+            <p>Em caso de mal-estar, procure o posto de saúde mais próximo.</p>
+            <button class="btn">Saiba Mais</button>
+        </div>
+        <div class="card" id="medical-care">
+            <h3>Atendimento Médico</h3>
+            <p>Postos de saúde 24h disponíveis nas principais áreas do evento.</p>
+            <button class="btn">Saiba Mais</button>
+        </div>
+        <div class="card" id="contacts">
+            <h3>Contatos Úteis</h3>
+            <p>Emergência: 192 | Polícia: 190 | Bombeiros: 193</p>
+            <button class="btn">Saiba Mais</button>
+        </div>
+        <div id="map"></div>
+    </div>
+    <footer>© 2025 Apoio à Saúde - Carnaval</footer>
+    <script>
+        function changeLanguage(lang) {
+    const translations = {
+        'pt': {
+            'health-tips': ['Dicas de Saúde', 'Mantenha-se hidratado, use protetor solar e descanse sempre que possível.', 'Saiba Mais'],
+            'first-aid': ['Primeiros Socorros', 'Em caso de mal-estar, procure o posto de saúde mais próximo.', 'Saiba Mais'],
+            'medical-care': ['Atendimento Médico', 'Postos de saúde 24h disponíveis nas principais áreas do evento.', 'Saiba Mais'],
+            'contacts': ['Contatos Úteis', 'Emergência: 192 | Polícia: 190 | Bombeiros: 193', 'Saiba Mais']
+        },
+        'en': {
+            'health-tips': ['Health Tips', 'Stay hydrated, use sunscreen, and rest whenever possible.', 'Learn More'],
+            'first-aid': ['First Aid', 'If you feel unwell, seek the nearest health post.', 'Learn More'],
+            'medical-care': ['Medical Assistance', '24-hour health posts available in key event areas.', 'Learn More'],
+            'contacts': ['Useful Contacts', 'Emergency: 192 | Police: 190 | Firefighters: 193', 'Learn More']
+        },
+        'es': {
+            'health-tips': ['Consejos de Salud', 'Manténgase hidratado, use protector solar y descanse siempre que sea posible.', 'Más Información'],
+            'first-aid': ['Primeros Auxilios', 'Si se siente mal, busque el puesto de salud más cercano.', 'Más Información'],
+            'medical-care': ['Atención Médica', 'Puestos de salud 24h disponibles en las principales áreas del evento.', 'Más Información'],
+            'contacts': ['Contactos Útiles', 'Emergencia: 192 | Policía: 190 | Bomberos: 193', 'Más Información']
+        },
+        'fr': {
+            'health-tips': ['Conseils de Santé', 'Restez hydraté, utilisez un écran solaire et reposez-vous autant que possible.', 'En Savoir Plus'],
+            'first-aid': ['Premiers Secours', 'En cas de malaise, cherchez le poste de santé le plus proche.', 'En Savoir Plus'],
+            'medical-care': ['Assistance Médicale', 'Postes de santé ouverts 24h/24 dans les principales zones de l’événement.', 'En Savoir Plus'],
+            'contacts': ['Contacts Utiles', 'Urgence: 192 | Police: 190 | Pompiers: 193', 'En Savoir Plus']
+        }
+    };
+
+    Object.keys(translations[lang]).forEach(id => {
+        const card = document.getElementById(id);
+        if (card) {
+            const title = card.querySelector("h3");
+            const text = card.querySelector("p");
+            const button = card.querySelector("button");
+
+            if (title) title.innerText = translations[lang][id][0];
+            if (text) text.innerText = translations[lang][id][1];
+            if (button) button.innerText = translations[lang][id][2];
+        }
+    });
+}
+    </script>
+</body>
+</html>
